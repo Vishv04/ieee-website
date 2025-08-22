@@ -14,11 +14,8 @@ const useEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/events`, {
-        headers: {
-          'x-api-key': apiKey
-        }
-      });
+      // Events endpoint is now public - no API key needed
+      const response = await axios.get(`${backendUrl}/api/events`);
       const allEvents = response.data;
       const currentDate = new Date();
 
