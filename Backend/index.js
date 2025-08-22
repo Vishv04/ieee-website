@@ -7,6 +7,13 @@ import allRoutes from './routes/routes.js';
 import fileUpload from 'express-fileupload';
 import authMiddleware from './middleware/authMiddleware.js';
 
+// Import controllers for public routes
+import { getAchievements } from './controllers/achievmentController.js';
+import { getEvents } from './controllers/eventController.js';
+import { contactUsEnroll } from './controllers/contactUsController.js';
+import { getUpdatesEnroll } from './controllers/getUpdatesController.js';
+import { getMembers, memberFront } from './controllers/memberController.js';
+
 dotenv.config();
 
 const app = express();
@@ -19,7 +26,10 @@ app.use(cors({
     const allowedOrigins = [
       "http://localhost:3000",
       "https://ieee-vishv.vercel.app",
-      "https://ieeeausb.in"
+      "https://ieeeausb.in",
+      "http://ieeeausb.in",
+      "https://www.ieeeausb.in",
+      "http://www.ieeeausb.in"
     ];
     // allow requests with no origin (e.g. Postman, curl)
     if (!origin || allowedOrigins.includes(origin)) {
@@ -46,8 +56,24 @@ app.use(fileUpload({
 dbConnect();
 cloudinaryConnect();
 
-// Routes
-app.use('/api', authMiddleware, allRoutes);
+// Routes - separate public and protected routes
+const publicRouter = express.Router();
+const protectedRouter = express.Router();
+
+// Public routes (no auth required)
+publicRouter.get('/achievements', getAchievements);
+publicRouter.get('/events', getEvents);
+publicRouter.post('/contact-us/enroll', contactUsEnroll);
+publicRouter.post('/updates/enroll', getUpdatesEnroll);
+publicRouter.get('/members', getMembers);
+publicRouter.get('/members-front', memberFront);
+
+// Protected routes (auth required)
+protectedRouter.use(authMiddleware);
+protectedRouter.use('/', allRoutes);
+
+app.use('/api', publicRouter);
+app.use('/api', protectedRouter);
 
 app.get("/" , (req,res) => {
     return res.json({

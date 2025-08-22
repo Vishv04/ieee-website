@@ -14,19 +14,11 @@ const useMembers = () => {
 
   const fetchMembers = async () => {
     try {
-      // Fetch all members
-      const response = await axios.get(`${backendUrl}/api/members`, {
-        headers: {
-          'x-api-key': apiKey
-        }
-      });
+      // Fetch all members (public endpoint - no API key needed)
+      const response = await axios.get(`${backendUrl}/api/members`);
       
-      // Fetch faculty members
-      const facultyResponse = await axios.get(`${backendUrl}/api/members-front?department=OBs&position=Faculty`, {
-        headers: {
-          'x-api-key': apiKey
-        }
-      });
+      // Fetch faculty members (public endpoint - no API key needed)
+      const facultyResponse = await axios.get(`${backendUrl}/api/members-front?department=OBs&position=Faculty`);
 
       const categorizedMembers = categorizeMembers(response.data);
       setMembers({
