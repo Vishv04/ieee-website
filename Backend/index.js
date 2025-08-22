@@ -17,7 +17,6 @@ app.use(express.urlencoded({ extended: true })); // Body parser middleware to pa
 app.use(cors({
     origin: ["http://localhost:3000", "https://ieee-vishv.vercel.app", "https://ieeeausb.in"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
 }));
 
