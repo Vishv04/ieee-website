@@ -15,10 +15,27 @@ const app = express();
 app.use(express.json()); // Body parser middleware to parse JSON body
 app.use(express.urlencoded({ extended: true })); // Body parser middleware to parse URL-encoded bodies
 app.use(cors({
-    origin: ["http://localhost:3000", "https://ieee-vishv.vercel.app", "https://ieeeausb.in"],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://ieee-vishv.vercel.app",
+      "https://ieeeausb.in"
+    ];
+    // allow requests with no origin (e.g. Postman, curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization", "x-api-key"]
 }));
+
+// make sure preflight is handled
+app.options("*", cors());
+
 
 app.use(fileUpload({
     useTempFiles : true,
