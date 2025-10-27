@@ -7,9 +7,15 @@ const apiKey = process.env.API_KEY;
 export const uploadMember = async (req, res) => {
     try {
         const { name, email, contact_number, join_year, programme, department, position, enrollment_number, instagramProfile, linkedinProfile, leave_date } = req.body;
+        // Validate uploaded file exists (express-fileupload puts files on req.files when used)
+        if (!req.files || !req.files.profile_image) {
+            console.error('No profile_image found on req.files:', req.files);
+            return res.status(400).json({ error: "No profile_image file uploaded. Ensure the request is multipart/form-data and the file field name is 'profile_image'." });
+        }
+
         const file = req.files.profile_image;
 
-        const uploadedFile = await uploadImageToCloudinary(file, "Members" , 80 );
+        const uploadedFile = await uploadImageToCloudinary(file, "Members", 80);
 
         // Create member in database
         const newMember = new Members({

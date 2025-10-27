@@ -29,7 +29,8 @@ app.use(cors({
       "https://ieeeausb.in",
       "http://ieeeausb.in",
       "https://www.ieeeausb.in",
-      "http://www.ieeeausb.in"
+      "http://www.ieeeausb.in",
+      "http://localhost:5173"
     ];
     // allow requests with no origin (e.g. Postman, curl)
     if (!origin || allowedOrigins.includes(origin)) {

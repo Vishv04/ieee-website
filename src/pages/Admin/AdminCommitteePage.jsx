@@ -53,6 +53,10 @@ const AdminCommitteePage = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Store the actual file in formData for upload
+      setFormData({ ...formData, profile_image: file });
+      
+      // Create preview for display
       const reader = new FileReader();
       reader.onload = (event) => {
         setCurrentProfileImage(event.target.result);
@@ -69,11 +73,15 @@ const AdminCommitteePage = () => {
 
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+      // Skip profile_image for now, we'll handle it separately
+      if (key !== 'profile_image') {
+        data.append(key, formData[key]);
+      }
     });
 
-    if (!formData.profile_image && currentProfileImage) {
-      data.append('profile_image', currentProfileImage);
+    // Append the file if it exists (must be a File object, not base64)
+    if (formData.profile_image instanceof File) {
+      data.append('profile_image', formData.profile_image);
     }
 
     setLoaderVisible(true);
@@ -179,7 +187,7 @@ const AdminCommitteePage = () => {
       let username = '';
       
       if (platform === 'instagram') {
-        username = '@' + urlObj.pathname.replace('/', '');
+        username = urlObj.pathname.replace('/', '');
       } else if (platform === 'linkedin') {
         username = urlObj.pathname.replace(/^\/|\/$/g, '').replace('in/', '');
       } else {
@@ -206,7 +214,7 @@ const AdminCommitteePage = () => {
       </div>
 
       {loaderVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[2000000]">
           <div className="w-20 h-20 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
@@ -293,7 +301,9 @@ const AdminCommitteePage = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block font-bold mb-1">Instagram Profile:</label>
+                <label className="block font-bold mb-1">
+                  Instagram Profile<span className="text-red-500">*</span>:
+                </label>
                 <input
                   type="text"
                   name="instagramProfile"
@@ -304,7 +314,9 @@ const AdminCommitteePage = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block font-bold mb-1">LinkedIn Profile:</label>
+                <label className="block font-bold mb-1">
+                  LinkedIn Profile<span className="text-red-500">*</span>:
+                </label>
                 <input
                   type="text"
                   name="linkedinProfile"
@@ -326,7 +338,9 @@ const AdminCommitteePage = () => {
               </div>
 
               <div className="col-span-2 border-2 border-dashed border-gray-300 p-4 rounded">
-                <label className="block font-bold mb-2">Profile Image:</label>
+                <label className="block font-bold mb-2">
+                  Profile Image<span className="text-red-500">*</span>:
+                </label>
                 <input
                   type="file"
                   name="profile_image"

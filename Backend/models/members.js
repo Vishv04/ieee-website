@@ -53,12 +53,10 @@ const memberSchema = new mongoose.Schema(
         },
         instagramProfile:{
             type: String,
-            required: true,
             trim: true,
         },
         linkedinProfile:{
             type: String,
-            required: true,
             trim: true,
         },
         public_id:{
